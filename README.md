@@ -1,7 +1,7 @@
 # TrafficPeak Query via API
 
 ## Descrição
-TrafficPeak Query via API é um projeto em Python que permite obter um token JWT e executar Queries SQL em uma API utilizando autenticação Bearer. O projeto facilita a extração de logs e dados através da API da Hydrolix.
+TrafficPeak Query via API é um projeto em Python que permite obter um token JWT e executar Queries SQL nos endpoints do produto TrafficPeak da Hydrolix, utilizando autenticação Bearer e facilitando a extração de logs via API.
 
 ## Referências da API - Akamai Ttraffic Peak
 - [Autenticação e geração de token](https://docs.hydrolix.io/reference/config_v1_login_create)
