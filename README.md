@@ -26,7 +26,7 @@ Antes de iniciar, certifique-se de ter o seguinte instalado em seu ambiente:
    ```
 
 ## Configuração
-O projeto requer arquivos de configuração para armazenar credenciais e endpoints:
+O projeto requer arquivos de configuração para armazenar credenciais e endppwdoints:
 
 1. **Crie o arquivo `.secret`** e adicione suas credenciais:
    ```ini
@@ -58,12 +58,12 @@ python queryRun.py run_query --query "SELECT reqTimeSec, reqHost, reqPath, secur
 ## Estrutura do Projeto
 ```
 trafficpeak-query-api/
-│── queryRun.py       # Script principal para autenticação e execução de queries
-│── requirements.txt   # Dependências do projeto
+│── queryRun.py       # Script principal para autenticação, coleta do token e execução de queries
+│── requirements.txt   # Dependências do projeto em Python
 │── .gitignore        # Arquivos ignorados pelo Git (credenciais e logs)
-│── .secret          # Credenciais (não deve ser enviado ao repositório)
-│── properties       # Endpoints da API (não deve ser enviado ao repositório)
-│── README.md        # Documentação do projeto
+│── .secret          # Credenciais - definir o usuário e senha para obter o token
+│── properties       # Endpoints da API com base nas referência da documentação da TrafficPeak ## Referência de API
+│── README.md        # Documentação do Projeto
 ```
 
 ## Observações
