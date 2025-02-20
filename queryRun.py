@@ -2,21 +2,44 @@ import requests
 import time
 import json
 import argparse
+import os
 
-# Função para carregar propriedades de um arquivo
-def load_properties(properties_file="properties"):
+# Constantes
+DEFAULT_TOKEN_EXPIRATION = 3600  # 1 hora em segundos
+DEFAULT_PROPERTIES_FILE = "properties"
+DEFAULT_SECRET_FILE = ".secret"
+
+# Função para carregar propriedades do arquivo
+def load_properties(properties_file=DEFAULT_PROPERTIES_FILE):
+    if not os.path.exists(properties_file):
+        raise FileNotFoundError(f"Arquivo de propriedades '{properties_file}' não encontrado.")
+    
     with open(properties_file, "r") as file:
         properties = dict(line.strip().split("=", 1) for line in file if "=" in line)
-    return properties.get("TOKEN_ENDPOINT"), properties.get("QUERY_ENDPOINT")
+    
+    token_endpoint = properties.get("TOKEN_ENDPOINT")
+    query_endpoint = properties.get("QUERY_ENDPOINT")
+    
+    if not token_endpoint or not query_endpoint:
+        raise ValueError(f"Arquivo de propriedades '{properties_file}' está incompleto ou mal formatado.")
+    
+    return token_endpoint, query_endpoint
 
 # Função para carregar credenciais do arquivo .secret
-def load_credentials(secret_file=".secret"):
+def load_credentials(secret_file=DEFAULT_SECRET_FILE):
+    if not os.path.exists(secret_file):
+        raise FileNotFoundError(f"Arquivo de credenciais '{secret_file}' não encontrado.")
+    
     with open(secret_file, "r") as file:
         credentials = dict(line.strip().split("=", 1) for line in file if "=" in line)
-    return credentials.get("USERNAME"), credentials.get("PASSWORD")
-
-TOKEN_ENDPOINT, QUERY_ENDPOINT = load_properties()
-USERNAME, PASSWORD = load_credentials()
+    
+    username = credentials.get("USERNAME")
+    password = credentials.get("PASSWORD")
+    
+    if not username or not password:
+        raise ValueError(f"Arquivo de credenciais '{secret_file}' está incompleto ou mal formatado.")
+    
+    return username, password
 
 # Armazena o token JWT e o tempo de expiração
 token_data = {"token": None, "expires_at": 0}
@@ -41,7 +64,7 @@ def get_jwt_token():
             raise KeyError("A resposta da API não contém um access_token válido. Resposta recebida: " + json.dumps(data, indent=4))
         
         token_data["token"] = data["auth_token"]["access_token"]
-        token_data["expires_at"] = time.time() + data["auth_token"].get("expires_in", 3600)  # Default: 1 hora
+        token_data["expires_at"] = time.time() + data["auth_token"].get("expires_in", DEFAULT_TOKEN_EXPIRATION)
         
         print("Token JWT obtido com sucesso!")
         return token_data["token"]
@@ -83,7 +106,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Executar consulta na API Hydrolix")
     parser.add_argument("action", choices=["get_token", "run_query"], help="Escolha entre gerar um token ou executar uma query")
     parser.add_argument("--query", type=str, help="Consulta SQL a ser executada (obrigatória para run_query)")
+    parser.add_argument("--properties", type=str, default=DEFAULT_PROPERTIES_FILE, help="Caminho para o arquivo de propriedades")
+    parser.add_argument("--secret", type=str, default=DEFAULT_SECRET_FILE, help="Caminho para o arquivo de credenciais")
     args = parser.parse_args()
+    
+    try:
+        TOKEN_ENDPOINT, QUERY_ENDPOINT = load_properties(args.properties)
+        USERNAME, PASSWORD = load_credentials(args.secret)
+    except (FileNotFoundError, ValueError) as e:
+        print(f"Erro ao carregar configurações: {e}")
+        exit(1)
     
     if args.action == "get_token":
         token = get_jwt_token()
