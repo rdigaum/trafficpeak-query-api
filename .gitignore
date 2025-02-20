@@ -1,0 +1,19 @@
+# Arquivos sensíveis
+.secret
+properties
+
+# Arquivos de configuração do ambiente Python
+.env
+*.pyc
+__pycache__/
+venv/
+.virtualenv/
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+.DS_Store
+
+# Configuração do editor de código
+.vscode/
+.idea/
