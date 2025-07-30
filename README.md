@@ -22,7 +22,7 @@ Antes de iniciar, certifique-se de ter o seguinte instalado em seu ambiente:
 
 2. Instale as dependências do projeto:
    ```bash
-   pip install -r requirements.txt
+   pip install -r requeriments.txt
    ```
 
 ## Configuração
